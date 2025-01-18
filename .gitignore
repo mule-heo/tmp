@@ -1,0 +1,15 @@
+# settings
+.vscode
+
+# build
+.parcel-cache
+dist
+
+# yarn
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+# !.yarn/sdks

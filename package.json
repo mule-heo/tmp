@@ -1,0 +1,29 @@
+{
+  "name": "vanilla-template",
+  "description": "Single Page Application Template",
+  "version": "0.1.0",
+  "repository": "git@github.com:mule-heo/vanilla-template.git",
+  "author": "mule-heo <devheojinwoo@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "yarn@4.6.0",
+  "source": "src/index.html",
+  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "scripts": {
+    "start": "parcel",
+    "build": "rm -rf dist && parcel build --public-url ./",
+    "serve": "rm -rf dist && parcel serve",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@parcel/packager-raw-url": "2.13.3",
+    "@parcel/service-worker": "^2.13.3",
+    "@parcel/transformer-webmanifest": "2.13.3",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^10.0.1",
+    "globals": "^15.14.0",
+    "parcel": "^2.13.3",
+    "prettier": "^3.4.2"
+  }
+}
