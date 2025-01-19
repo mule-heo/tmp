@@ -1,11 +1,12 @@
 {
-  "name": "vanilla-template",
+  "name": "simple-tuner-tmp",
   "description": "Single Page Application Template",
   "version": "0.1.0",
   "repository": "git@github.com:mule-heo/vanilla-template.git",
   "author": "mule-heo <devheojinwoo@gmail.com>",
   "license": "MIT",
   "type": "module",
+  "private": true,
   "packageManager": "yarn@4.6.0",
   "source": "src/index.html",
   "browserslist": "> 0.5%, last 2 versions, not dead",

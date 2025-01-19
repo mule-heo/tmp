@@ -12,12 +12,9 @@ async function activate() {
 }
 addEventListener("activate", (e) => e.waitUntil(activate()));
 
-// Fetch event: Serve assets from cache or network (fallback to cache if offline)
+// Fetch event: Network first strategy
 async function fetchAndCache(request) {
   const cache = await caches.open(version);
-  const cached = await cache.match(request); // Try to get the resource from cache
-  if (cached) return cached; // If found, return the cached response
-
   try {
     const response = await fetch(request); // Try fetching the resource from the network
     if (response.ok) {
@@ -25,10 +22,10 @@ async function fetchAndCache(request) {
     }
     return response; // Return the network response
   } catch (_err) {
-    // If the network request fails (i.e., offline), fallback to cached `index.html`
-    const fallbackResponse = await cache.match("/index.html");
+    // If the network request fails (i.e., offline), fallback to cache
+    const cached = await cache.match(request);
     return (
-      fallbackResponse ||
+      cached ||
       new Response("You are offline and no cached content is available.", {
         status: 503,
         statusText: "Service Unavailable",

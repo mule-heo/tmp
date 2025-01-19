@@ -3531,6 +3531,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"simple-tuner-tmp@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "simple-tuner-tmp@workspace:."
+  dependencies:
+    "@eslint/js": "npm:^9.18.0"
+    "@parcel/packager-raw-url": "npm:2.13.3"
+    "@parcel/service-worker": "npm:^2.13.3"
+    "@parcel/transformer-webmanifest": "npm:2.13.3"
+    eslint: "npm:^9.18.0"
+    eslint-config-prettier: "npm:^10.0.1"
+    globals: "npm:^15.14.0"
+    parcel: "npm:^2.13.3"
+    prettier: "npm:^3.4.2"
+  languageName: unknown
+  linkType: soft
+
 "smart-buffer@npm:^4.2.0":
   version: 4.2.0
   resolution: "smart-buffer@npm:4.2.0"
@@ -3745,22 +3761,6 @@ __metadata:
   checksum: 10c0/2f1580137b0c3e6cf5405f37aaa8f5249961a76d26f1ca8efc0ff49a2fc0e0b2db56de8e521a174d075758e0c7eb3e590edec0832eb44478b958f09914920f19
   languageName: node
   linkType: hard
-
-"vanilla-template@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "vanilla-template@workspace:."
-  dependencies:
-    "@eslint/js": "npm:^9.18.0"
-    "@parcel/packager-raw-url": "npm:2.13.3"
-    "@parcel/service-worker": "npm:^2.13.3"
-    "@parcel/transformer-webmanifest": "npm:2.13.3"
-    eslint: "npm:^9.18.0"
-    eslint-config-prettier: "npm:^10.0.1"
-    globals: "npm:^15.14.0"
-    parcel: "npm:^2.13.3"
-    prettier: "npm:^3.4.2"
-  languageName: unknown
-  linkType: soft
 
 "weak-lru-cache@npm:^1.2.2":
   version: 1.2.2
