@@ -1,0 +1,56 @@
+[
+  {
+    "quantity": 25,
+    "unit_price": 7700,
+    "discount_rate": 4.0,
+    "return_quantity": 26
+  },
+  {
+    "quantity": 50,
+    "unit_price": 7700,
+    "discount_rate": 4.0,
+    "return_quantity": 52
+  },
+  {
+    "quantity": 100,
+    "unit_price": 7700,
+    "discount_rate": 4.0,
+    "return_quantity": 104
+  },
+  {
+    "quantity": 200,
+    "unit_price": 7700,
+    "discount_rate": 4.5,
+    "return_quantity": 209
+  },
+  {
+    "quantity": 300,
+    "unit_price": 7700,
+    "discount_rate": 5.0,
+    "return_quantity": 315
+  },
+  {
+    "quantity": 400,
+    "unit_price": 7700,
+    "discount_rate": 5.5,
+    "return_quantity": 422
+  },
+  {
+    "quantity": 500,
+    "unit_price": 7700,
+    "discount_rate": 6.0,
+    "return_quantity": 530
+  },
+  {
+    "quantity": 700,
+    "unit_price": 7700,
+    "discount_rate": 6.5,
+    "return_quantity": 746
+  },
+  {
+    "quantity": 1000,
+    "unit_price": 7700,
+    "discount_rate": 7.0,
+    "return_quantity": 1070
+  }
+]

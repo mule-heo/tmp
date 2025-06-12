@@ -3,14 +3,9 @@
 import * as React from "react";
 import { Label, Pie, PieChart, Sector } from "recharts";
 import { PieSectorDataItem } from "recharts/types/polar/Pie";
+import "@/lib/tickets";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
@@ -25,50 +20,81 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Ticket } from "@/lib/types";
+import Tickets from "@/lib/tickets";
 
 export const description = "An interactive pie chart";
 
-const desktopData = [
-  { month: "january", desktop: 186, fill: "var(--color-january)" },
-  { month: "february", desktop: 305, fill: "var(--color-february)" },
-  { month: "march", desktop: 237, fill: "var(--color-march)" },
-  { month: "april", desktop: 173, fill: "var(--color-april)" },
-  { month: "may", desktop: 209, fill: "var(--color-may)" },
+const colors = [
+  "#3b82f6", // Blue
+  "#f43f5e", // Rose
+  "#10b981", // Emerald
+  "#f59e0b", // Amber
+  "#8b5cf6", // Violet
+  "#0ea5e9", // Sky
+  "#84cc16", // Lime
+  "#64748b", // Slate
 ];
 
-const createChartConfig = (data: { username: string; ammount: number }[]) => {
+const createChartConfig = (data: Ticket[]) => {
   return data.reduce((acc, item, idx) => {
-    acc[item.username] = {
+    acc[item._ticketId] = {
+      _ticketId: item._ticketId,
       label: item.username,
-      color: `var(--color-${idx + 1})`,
+      color: colors[idx % colors.length],
     };
     return acc;
-  }, {} as Record<string, { label: string; color: string }>);
+  }, {} as Record<string, { _ticketId: string; label: string; color: string }>);
 };
 
-type Data = {
-  username: string;
-  ammount: number;
-}[];
 export function ChartPieInteractive({
-  defaultValue = "february",
+  defaultValue = "",
   values,
 }: {
   defaultValue?: string;
-  values: Data;
+  values: Ticket[];
 }) {
   const id = "pie-interactive";
-  const [activeSection, setActiveSection] = React.useState(defaultValue);
+  const [activeSection, setActiveSection] = React.useState(
+    defaultValue || values[0]._ticketId
+  );
 
-  const chartConfig: ChartConfig = React.useMemo(() => {
-    return createChartConfig(values);
+  const plan = React.useMemo(() => {
+    return Tickets.getNearestPlan(values);
   }, [values]);
 
-  const activeIndex = React.useMemo(
-    () => desktopData.findIndex((item) => item.month === activeSection),
-    [activeSection]
+  const modifiedValues = React.useMemo(() => {
+    if (!plan) return values;
+    const totalQuantity = values.reduce(
+      (sum, ticket) => sum + ticket.quantity,
+      0
+    );
+    return Tickets.getDiscountedAmmounts(
+      [
+        ...values,
+        {
+          _ticketId: "joker",
+          username: "Joker",
+          quantity: plan.return_quantity - totalQuantity,
+        },
+      ],
+      plan
+    );
+  }, [values, plan]);
+
+  const chartConfig: ChartConfig = React.useMemo(
+    () => createChartConfig(modifiedValues),
+    [modifiedValues]
   );
-  const months = React.useMemo(() => desktopData.map((item) => item.month), []);
+
+  const activeIndex = React.useMemo(
+    () => modifiedValues.findIndex((item) => item._ticketId === activeSection),
+    [modifiedValues, activeSection]
+  );
+  const ids = React.useMemo(
+    () => modifiedValues.map((item) => item._ticketId),
+    [modifiedValues]
+  );
 
   return (
     <Card data-chart={id} className="flex flex-col">
@@ -77,21 +103,24 @@ export function ChartPieInteractive({
         <div className="grid gap-1">
           <CardTitle>식권 공동구매 모집 현황</CardTitle>
         </div>
+        <div className="text-xs text-muted-foreground">
+          {plan
+            ? `현재 단계: ${plan.quantity}개 구매 시 ${plan.return_quantity}개 제공`
+            : "식권 개수 한계 초과(1,070개)"}
+        </div>
         <Select value={activeSection} onValueChange={setActiveSection}>
           <SelectTrigger
             className="ml-auto h-7 w-[130px] rounded-lg pl-2.5"
             aria-label="Select a value"
           >
-            <SelectValue placeholder="Select month" />
+            <SelectValue placeholder="Select user" />
           </SelectTrigger>
           <SelectContent align="end" className="rounded-xl">
-            {months.map((key) => {
+            {ids.map((key) => {
               const config = chartConfig[key as keyof typeof chartConfig];
-
               if (!config) {
                 return null;
               }
-
               return (
                 <SelectItem
                   key={key}
@@ -102,7 +131,7 @@ export function ChartPieInteractive({
                     <span
                       className="flex h-3 w-3 shrink-0 rounded-xs"
                       style={{
-                        backgroundColor: `var(--color-${key})`,
+                        backgroundColor: config.color ?? "var(--color-chart-1)",
                       }}
                     />
                     {config?.label}
@@ -125,8 +154,12 @@ export function ChartPieInteractive({
               content={<ChartTooltipContent hideLabel />}
             />
             <Pie
-              data={values}
-              dataKey="ammount"
+              data={modifiedValues.map((item) => ({
+                ...item,
+                fill:
+                  chartConfig[item._ticketId]?.color ?? "var(--color-chart-1)",
+              }))}
+              dataKey="quantity"
               nameKey="username"
               innerRadius={60}
               strokeWidth={5}
@@ -134,16 +167,18 @@ export function ChartPieInteractive({
               activeShape={({
                 outerRadius = 0,
                 ...props
-              }: PieSectorDataItem) => (
-                <g>
-                  <Sector {...props} outerRadius={outerRadius + 10} />
-                  <Sector
-                    {...props}
-                    outerRadius={outerRadius + 25}
-                    innerRadius={outerRadius + 12}
-                  />
-                </g>
-              )}
+              }: PieSectorDataItem) => {
+                return (
+                  <g>
+                    <Sector {...props} outerRadius={outerRadius + 10} />
+                    <Sector
+                      {...props}
+                      outerRadius={outerRadius + 25}
+                      innerRadius={outerRadius + 12}
+                    />
+                  </g>
+                );
+              }}
             >
               <Label
                 content={({ viewBox }) => {
@@ -160,14 +195,19 @@ export function ChartPieInteractive({
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {desktopData[activeIndex].desktop.toLocaleString()}
+                          {modifiedValues[
+                            activeIndex
+                          ].quantity.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Visitors
+                          {(
+                            modifiedValues[activeIndex].ammount ?? "-"
+                          ).toLocaleString()}
+                          원
                         </tspan>
                       </text>
                     );
