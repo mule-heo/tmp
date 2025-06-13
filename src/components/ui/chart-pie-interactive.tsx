@@ -41,23 +41,26 @@ const createChartConfig = (data: Ticket[]) => {
     acc[item._ticketId] = {
       _ticketId: item._ticketId,
       label: item.username,
-      color: colors[idx % colors.length],
+      color:
+        colors[
+          idx >= data.length - 1
+            ? idx - (data.length - 1)
+            : (idx % (colors.length - 1)) + 1
+        ],
     };
     return acc;
   }, {} as Record<string, { _ticketId: string; label: string; color: string }>);
 };
 
 export function ChartPieInteractive({
-  defaultValue = "",
+  defaultValue = "remaining",
   values,
 }: {
   defaultValue?: string;
   values: Ticket[];
 }) {
   const id = "pie-interactive";
-  const [activeSection, setActiveSection] = React.useState(
-    defaultValue || values[0]._ticketId
-  );
+  const [activeSection, setActiveSection] = React.useState(defaultValue);
 
   const plan = React.useMemo(() => {
     return Tickets.getNearestPlan(values);
@@ -73,8 +76,8 @@ export function ChartPieInteractive({
       [
         ...values,
         {
-          _ticketId: "joker",
-          username: "Joker",
+          _ticketId: "remaining",
+          username: "Remaining",
           quantity: plan.return_quantity - totalQuantity,
         },
       ],
@@ -101,7 +104,7 @@ export function ChartPieInteractive({
       <ChartStyle id={id} config={chartConfig} />
       <CardHeader className="flex-row items-start space-y-0 pb-0">
         <div className="grid gap-1">
-          <CardTitle>식권 공동구매 모집 현황</CardTitle>
+          <CardTitle>식권 구매 모집 현황</CardTitle>
         </div>
         <div className="text-xs text-muted-foreground">
           {plan

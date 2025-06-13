@@ -1,24 +1,32 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ChartPieInteractive } from "@/components/ui/chart-pie-interactive";
 import useSWR from "swr";
 import { Ticket } from "@/lib/types";
+import { PlanTableSection } from "@/components/PlanTable";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const clamp = (value: number, min: number, max: number) => {
   return Math.min(Math.max(value, min), max);
 };
 
+enum Tab {
+  Plans = "plans",
+  Survey = "survey",
+}
+
 export default function Home() {
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [username, setUsername] = useState("");
   const [quantity, setQuantity] = useState(0);
-  const handleChangeQuantity = (value: number) => {
+  const [tabValue, setTabValue] = useState<string>(Tab.Plans);
+  const handleChangeQuantity = useCallback((value: number) => {
     if (isNaN(value)) setQuantity(0);
     else setQuantity(clamp(value, 0, 1000));
-  };
+  }, []);
 
   useEffect(() => {
     const saved = localStorage.getItem("ticketId");
@@ -63,6 +71,7 @@ export default function Home() {
       .then((data) => {
         localStorage.setItem("ticketId", JSON.stringify(data));
         setTicket(data);
+        setTabValue(Tab.Survey);
         mutate();
       })
       .catch((error) => {
@@ -94,12 +103,24 @@ export default function Home() {
 
   return (
     <main className="p-10 xl:min-w-xl md:min-w-md mx-auto space-y-4">
-      <h1 className="text-2xl font-bold mb-4">식권 공동구매 설문조사</h1>
-      <SurveyResult
-        tickets={tickets}
-        ticket={ticket}
-        handleCancel={handleCancel}
-      />
+      <h1 className="text-2xl font-bold mb-4">식권 구매 설문조사</h1>
+      <Tabs value={tabValue} className="w-full" onValueChange={setTabValue}>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="plans">식권 할인 가격표</TabsTrigger>
+          <TabsTrigger value="survey">모집 현황</TabsTrigger>
+        </TabsList>
+        <TabsContent value="plans">
+          <PlanTableSection tickets={tickets} />
+        </TabsContent>
+        <TabsContent value="survey">
+          <SurveyResult
+            tickets={tickets}
+            ticket={ticket}
+            handleCancel={handleCancel}
+          />
+        </TabsContent>
+      </Tabs>
+
       {!ticket && (
         <SurveyFormInner
           username={username}
@@ -130,6 +151,9 @@ function SurveyFormInner({
     <>
       <p className="text-sm text-muted-foreground mb-4">
         이름과 구매를 원하는 식권 수량을 입력해주세요.
+      </p>
+      <p className="text-sm text-muted-foreground mb-4">
+        합계 1000장 이내에서 구매 개수 및 현재 단계가 자동으로 변경됩니다.
       </p>
       <label className="block mb-2">이름</label>
       <Input
@@ -166,7 +190,7 @@ function SurveyResult({
     <>
       <ChartPieInteractive defaultValue={ticket?._ticketId} values={tickets} />
       {ticket && (
-        <Button onClick={handleCancel} variant="destructive">
+        <Button onClick={handleCancel} variant="destructive" className="mt-2">
           취소
         </Button>
       )}
