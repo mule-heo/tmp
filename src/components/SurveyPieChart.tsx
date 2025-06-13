@@ -52,7 +52,7 @@ const createChartConfig = (data: Ticket[]) => {
   }, {} as Record<string, { _ticketId: string; label: string; color: string }>);
 };
 
-export function ChartPieInteractive({
+export function SurveyPieChart({
   defaultValue = "remaining",
   values,
 }: {

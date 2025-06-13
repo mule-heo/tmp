@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ChartPieInteractive } from "@/components/ui/chart-pie-interactive";
+import { SurveyPieChart } from "@/components/SurveyPieChart";
 import useSWR from "swr";
 import { Ticket } from "@/lib/types";
 import { PlanTableSection } from "@/components/PlanTable";
@@ -188,7 +188,7 @@ function SurveyResult({
 }) {
   return (
     <>
-      <ChartPieInteractive defaultValue={ticket?._ticketId} values={tickets} />
+      <SurveyPieChart defaultValue={ticket?._ticketId} values={tickets} />
       {ticket && (
         <Button onClick={handleCancel} variant="destructive" className="mt-2">
           취소
