@@ -1,12 +1,13 @@
 {
   "name": "meal-ticket-buddy-planner",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack -p 6120",
     "build": "next build",
     "start": "next start -p 6120",
-    "lint": "next lint"
+    "lint": "next lint",
+    "start:all": "tsx entry.ts"
   },
   "dependencies": {
     "@radix-ui/react-select": "^2.2.5",
@@ -16,16 +17,19 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.514.0",
     "next": "15.3.3",
+    "node-cron": "^4.2.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "recharts": "^2.15.3",
     "swr": "^2.3.3",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "tsx": "^4.20.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/node-cron": "^3.0.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
